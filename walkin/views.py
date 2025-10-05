@@ -352,3 +352,21 @@ def profile_view(request):
         'user': request.user,
     }
     return render(request, 'accounts/profile.html', context)
+
+@login_required
+@admin_required
+def desk_management_view(request):
+    """Quản lý bàn - CHỈ ADMIN"""
+    user = request.user
+    
+    if user.is_superuser:
+        desks = Desk.objects.all()
+    else:
+        desks = Desk.objects.filter(location=user.location)
+    
+    context = {
+        'user': user,
+        'desks': desks,
+    }
+    
+    return render(request, 'queue/desk_management.html', context)

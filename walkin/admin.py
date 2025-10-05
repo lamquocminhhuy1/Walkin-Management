@@ -25,3 +25,12 @@ class UserAdmin(BaseUserAdmin):
         ('Personal Info', {'fields': ('first_name', 'last_name', 'email')}),
         ('Location & Role', {'fields': ('location', 'role')}),
     )
+
+from .models import Location, User, Desk, WalkInQueue
+
+@admin.register(Desk)
+class DeskAdmin(admin.ModelAdmin):
+    list_display = ['desk_number', 'desk_name', 'location', 'is_active', 'created_at']
+    list_filter = ['is_active', 'location', 'created_at']
+    search_fields = ['desk_number', 'desk_name', 'service_type']
+    ordering = ['location', 'desk_number']
