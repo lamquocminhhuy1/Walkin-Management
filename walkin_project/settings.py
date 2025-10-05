@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-t6o#7&%4ybs)wwvsivc#z61-^&64+9mr5l^%&lh4knxc#5bib0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['103.90.226.109','*']
 
 AUTH_USER_MODEL = 'walkin.User'
 

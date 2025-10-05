@@ -1,9 +1,10 @@
+<!-- templates/dashboard/index.html - COPY TOÀN BỘ FILE NÀY -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Walk-in Queue Management</title>
+    <title>Trang quản trị - Hệ thống Quản lý Hàng đợi</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -32,7 +33,7 @@
             font-size: 14px;
         }
         .btn-logout:hover { background: #c82333; }
-        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
         .alert {
             padding: 15px 20px;
             border-radius: 8px;
@@ -43,6 +44,11 @@
             background-color: #d4edda;
             border: 1px solid #c3e6cb;
             color: #155724;
+        }
+        .alert-error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
         }
         .page-header { margin-bottom: 30px; }
         .page-header h1 { font-size: 32px; color: #333; margin-bottom: 10px; }
@@ -61,6 +67,108 @@
             margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .stat-number { font-size: 36px; font-weight: 700; margin-bottom: 5px; }
+        .stat-label { font-size: 14px; opacity: 0.9; }
+        .desk-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .desk-card {
+            background: white;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .desk-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2);
+        }
+        .desk-card.inactive {
+            opacity: 0.6;
+            background: #f8f9fa;
+        }
+        .desk-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        .desk-name {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .desk-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        .desk-stat-item { text-align: center; }
+        .desk-stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #667eea;
+        }
+        .desk-stat-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+        }
+        .desk-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .desk-status.active { background: #d4edda; color: #155724; }
+        .desk-status.inactive { background: #f8d7da; color: #721c24; }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary:hover { transform: translateY(-2px); }
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
         }
         .info-grid {
             display: grid;
@@ -84,26 +192,12 @@
         }
         .badge-success { background: #d4edda; color: #155724; }
         .badge-primary { background: #cce5ff; color: #004085; }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-        }
-        .stat-number { font-size: 36px; font-weight: 700; margin-bottom: 5px; }
-        .stat-label { font-size: 14px; opacity: 0.9; }
+        .badge-warning { background: #fff3cd; color: #856404; }
     </style>
 </head>
 <body>
     <nav class="navbar">
-        <div class="navbar-brand">Walk-in Queue Management</div>
+        <div class="navbar-brand">Hệ thống Quản lý Hàng đợi</div>
         <div class="navbar-user">
             <div class="user-info">
                 <div class="user-name">{{ user.first_name|default:user.username }}</div>
@@ -112,7 +206,7 @@
                     {% if user.location %} - {{ user.location.name }}{% endif %}
                 </div>
             </div>
-            <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+            <a href="{% url 'logout' %}" class="btn-logout">Đăng xuất</a>
         </div>
     </nav>
     
@@ -124,36 +218,41 @@
         {% endif %}
         
         <div class="page-header">
-            <h1>Dashboard</h1>
-            <p>Welcome to your queue management dashboard</p>
+            <h1>Trang quản trị</h1>
+            <p>Chào mừng đến với trang quản lý hàng đợi</p>
         </div>
         
         {% if is_superadmin %}
             <div class="card">
-                <div class="card-header">System Administrator</div>
-                <p style="color: #666;">You have full access to all locations and system settings.</p>
+                <div class="card-header">Quản trị viên hệ thống</div>
+                <p style="color: #666;">Bạn có quyền truy cập toàn bộ địa điểm và cài đặt hệ thống.</p>
             </div>
         {% endif %}
         
+        <!-- User Info Card -->
         <div class="card">
-            <div class="card-header">Your Information</div>
+            <div class="card-header">Thông tin cá nhân</div>
             <div class="info-grid">
                 <div class="info-item">
-                    <span class="info-label">Username</span>
+                    <span class="info-label">Tên đăng nhập</span>
                     <span class="info-value">{{ user.username }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Full Name</span>
+                    <span class="info-label">Họ và tên</span>
                     <span class="info-value">{{ user.first_name }} {{ user.last_name }}</span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">Email</span>
-                    <span class="info-value">{{ user.email|default:"Not set" }}</span>
+                    <span class="info-value">{{ user.email|default:"Chưa thiết lập" }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Role</span>
+                    <span class="info-label">Vai trò</span>
                     <span class="info-value">
-                        <span class="badge badge-primary">{{ user.get_role_display }}</span>
+                        {% if user.is_admin_role %}
+                            <span class="badge badge-success">{{ user.get_role_display }}</span>
+                        {% else %}
+                            <span class="badge badge-warning">{{ user.get_role_display }}</span>
+                        {% endif %}
                     </span>
                 </div>
             </div>
@@ -161,27 +260,27 @@
         
         {% if location %}
         <div class="card">
-            <div class="card-header">Your Location</div>
+            <div class="card-header">Địa điểm làm việc</div>
             <div class="info-grid">
                 <div class="info-item">
-                    <span class="info-label">Center Name</span>
+                    <span class="info-label">Tên trung tâm</span>
                     <span class="info-value">{{ location.name }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">State</span>
+                    <span class="info-label">Tỉnh/Thành phố</span>
                     <span class="info-value">{{ location.state }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Address</span>
+                    <span class="info-label">Địa chỉ</span>
                     <span class="info-value">{{ location.address }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Status</span>
+                    <span class="info-label">Trạng thái</span>
                     <span class="info-value">
                         {% if location.active %}
-                            <span class="badge badge-success">Active</span>
+                            <span class="badge badge-success">Hoạt động</span>
                         {% else %}
-                            <span class="badge badge-danger">Inactive</span>
+                            <span class="badge badge-danger">Ngưng hoạt động</span>
                         {% endif %}
                     </span>
                 </div>
@@ -189,25 +288,74 @@
         </div>
         {% endif %}
         
+        <!-- Quick Stats -->
         <div class="card">
-            <div class="card-header">Quick Stats</div>
+            <div class="card-header">Thống kê nhanh</div>
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-number">0</div>
-                    <div class="stat-label">Today's Queue</div>
+                    <div class="stat-number">{{ today_total }}</div>
+                    <div class="stat-label">Hàng đợi hôm nay</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">0</div>
-                    <div class="stat-label">In Progress</div>
+                    <div class="stat-number">{{ in_progress }}</div>
+                    <div class="stat-label">Đang xử lý</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">0</div>
-                    <div class="stat-label">Completed</div>
+                    <div class="stat-number">{{ completed }}</div>
+                    <div class="stat-label">Đã hoàn thành</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ waiting }}</div>
+                    <div class="stat-label">Đang chờ</div>
                 </div>
             </div>
-            <p style="margin-top: 20px; color: #666; text-align: center;">
-                Queue management features coming soon...
-            </p>
+        </div>
+        
+        <!-- Desk List - PHẦN NÀY BỊ THIẾU TRONG TEMPLATE CŨ -->
+        <div class="card">
+            <div class="card-header">
+                <span>📋 Danh sách Bàn phục vụ</span>
+                {% if is_admin %}
+                    <a href="{% url 'desk_management' %}" class="btn btn-primary btn-sm">⚙️ Quản lý bàn</a>
+                {% endif %}
+            </div>
+            
+            {% if desks %}
+                <div class="desk-grid">
+                    {% for desk in desks %}
+                        <a href="{% url 'desk_detail' desk.id %}" class="desk-card {% if not desk.is_active %}inactive{% endif %}">
+                            <div class="desk-number">{{ desk.desk_number }}</div>
+                            <div class="desk-name">{{ desk.desk_name }}</div>
+                            <div class="desk-stats">
+                                <div class="desk-stat-item">
+                                    <div class="desk-stat-value">{{ desk.get_waiting_count }}</div>
+                                    <div class="desk-stat-label">Đang chờ</div>
+                                </div>
+                                <div class="desk-stat-item">
+                                    <div class="desk-stat-value">{{ desk.get_serving_count }}</div>
+                                    <div class="desk-stat-label">Đang phục vụ</div>
+                                </div>
+                                <div class="desk-stat-item">
+                                    <div class="desk-stat-value">{{ desk.get_today_total }}</div>
+                                    <div class="desk-stat-label">Hôm nay</div>
+                                </div>
+                            </div>
+                            <span class="desk-status {% if desk.is_active %}active{% else %}inactive{% endif %}">
+                                {% if desk.is_active %}✅ Đang mở{% else %}⚠️ Tạm ngưng{% endif %}
+                            </span>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p style="text-align: center; color: #999; padding: 40px;">
+                    Chưa có bàn phục vụ nào.
+                    {% if is_admin %}
+                        <a href="{% url 'desk_management' %}" style="color: #667eea;">Tạo bàn mới</a>
+                    {% else %}
+                        Vui lòng liên hệ quản trị viên để tạo bàn.
+                    {% endif %}
+                </p>
+            {% endif %}
         </div>
     </div>
 </body>
